@@ -1,5 +1,3 @@
-import tkinter
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -38,28 +36,26 @@ def update_hacks():
     global lbl
     hacks = not hacks
     if hacks:
-        lbl.config(text="Hacks ON")
+        lbl.config(text="Hacks On")
     else:
-        lbl.config(text="Hacks OFF")
+        lbl.config(text="Hacks Off")
 
 
 root = Tk()
 root.protocol("WM_DELETE_WINDOW", on_closing)
-hacks = tkinter.BooleanVar()
+hacks = BooleanVar()
 
 root.title("Seneca Hacks")
 root.minsize(250, 100)
 root.maxsize(250, 100)
-root.iconbitmap("Icon/favicon.ico")
+root.iconbitmap("icon/favicon.ico")
 
-driver.get("https://app.senecalearning.com/courses")
-# driver.implicitly_wait(5)
+driver.get("https://app.senecalearning.com/courses/login")
 
 lbl = Label(root, font=10)
 lbl.pack()
 button = Checkbutton(root, variable=hacks, command=update_hacks)
 button.pack()
-
 
 update_hacks()
 
