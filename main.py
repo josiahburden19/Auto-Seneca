@@ -17,7 +17,7 @@ def on_closing():
 
 def update_clock():
     # Update the clock here
-    if hacks:
+    if auto:
         try:
             selected_elements = driver.find_elements(By.XPATH, "//*[contains(@class, 'Input_input__') and @value='']")
             for i in selected_elements:
@@ -31,21 +31,21 @@ def update_clock():
     root.after(200, update_clock)
 
 
-def update_hacks():
-    global hacks
+def update_auto():
+    global auto
     global lbl
-    hacks = not hacks
-    if hacks:
-        lbl.config(text="Hacks On")
+    auto = not auto
+    if auto:
+        lbl.config(text="Auto On")
     else:
-        lbl.config(text="Hacks Off")
+        lbl.config(text="Auto Off")
 
 
 root = Tk()
 root.protocol("WM_DELETE_WINDOW", on_closing)
-hacks = BooleanVar()
+auto = BooleanVar()
 
-root.title("Seneca Hacks")
+root.title("Auto Seneca")
 root.minsize(250, 100)
 root.maxsize(250, 100)
 root.iconbitmap("icon/favicon.ico")
@@ -54,10 +54,10 @@ driver.get("https://app.senecalearning.com/courses/login")
 
 lbl = Label(root, font=10)
 lbl.pack()
-button = Checkbutton(root, variable=hacks, command=update_hacks)
+button = Checkbutton(root, variable=auto, command=update_auto)
 button.pack()
 
-update_hacks()
+update_auto()
 
 update_clock()
 
