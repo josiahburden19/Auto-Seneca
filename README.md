@@ -1,7 +1,7 @@
 # Auto Seneca
 ## Installation:
 ### Simple (Recommended):
-  1. Download from the releases section the latest version of **"Auto Seneca.exe"**.
+  1. From the releases section download and extract the latest version of **"Auto Seneca.zip"**.
   2. Run **"Auto Seneca.exe"**.
   3. Chrome will open **(Chrome must be installed)**.
   4. Sign in to Seneca Learning.
