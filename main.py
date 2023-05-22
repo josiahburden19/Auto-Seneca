@@ -1,12 +1,48 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from tkinter import *
+import winreg
 
-chrome_options = Options()
-chrome_options.add_experimental_option("detach", True)
-driver = webdriver.Chrome(options=chrome_options)
-driver.maximize_window()
+
+def get_default_browser():
+    # Open the registry key for user-level settings
+    reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                             r"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice")
+
+    # Read the ProgID (Program ID) value for the default browser
+    prog_id, _ = winreg.QueryValueEx(reg_key, "ProgId")
+
+    # Extract the browser name from the ProgID
+    browser_name = prog_id.split('.')[-1]
+
+    return browser_name
+
+
+def run_browser(browser):
+    global options, driver
+    if browser == 'ChromeHTML':
+        from selenium.webdriver.chrome.options import Options
+    elif browser == 'MSEdgeHTM':
+        from selenium.webdriver.edge.options import Options
+    elif browser == 'FirefoxHTML':
+        from selenium.webdriver.firefox.options import Options
+    else:
+        print('ERROR: Browser Not Supported')
+    options = Options()
+    options.add_experimental_option("detach", True)
+
+    if browser == 'ChromeHTML':
+        driver = webdriver.Chrome(options=options)
+    elif browser == 'MSEdgeHTM':
+        driver = webdriver.Edge(options=options)
+    elif browser == 'FirefoxHTML':
+        driver = webdriver.Firefox(options=options)
+
+    driver.get("https://app.senecalearning.com/courses/login")
+    driver.maximize_window()
+
+
+run_browser(get_default_browser())
 
 
 def on_closing():
@@ -17,16 +53,21 @@ def on_closing():
 
 def update_clock():
     # Update the clock here
-    if auto:
-        try:
-            selected_elements = driver.find_elements(By.XPATH, "//*[contains(@class, 'Input_input__') and @value='']")
-            for i in selected_elements:
-                text_element = i.find_element(By.XPATH, "../preceding-sibling::span/span")
-                i.send_keys(text_element.get_attribute("innerHTML"))
-        except:
-            driver.quit()
-            root.destroy()
-            return 1
+    if len(driver.window_handles) == 0:
+        driver.quit()
+        root.destroy()
+    else:
+        if auto:
+            try:
+                selected_elements = driver.find_elements(By.XPATH, "//*[contains(@class, 'Input_input__') and "
+                                                                   "@value='']")
+                for i in selected_elements:
+                    text_element = i.find_element(By.XPATH, "../preceding-sibling::span/span")
+                    i.send_keys(text_element.get_attribute("innerHTML"))
+            except:
+                root.destroy()
+                driver.quit()
+                return 1
     # Schedule the function to be called again in 1 second
     root.after(200, update_clock)
 
@@ -49,8 +90,6 @@ root.title("Auto Seneca")
 root.minsize(250, 100)
 root.maxsize(250, 100)
 root.iconbitmap("icon/favicon.ico")
-
-driver.get("https://app.senecalearning.com/courses/login")
 
 lbl = Label(root, font=10)
 lbl.pack()
