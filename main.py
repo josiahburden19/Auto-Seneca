@@ -19,23 +19,30 @@ def get_default_browser():
 
 
 def run_browser(browser):
+    print(browser)
     global options, driver
     if browser == 'ChromeHTML':
         from selenium.webdriver.chrome.options import Options
     elif browser == 'MSEdgeHTM':
         from selenium.webdriver.edge.options import Options
-    elif browser == 'FirefoxHTML':
+    elif browser.startswith("FirefoxURL"):
         from selenium.webdriver.firefox.options import Options
     else:
         print('ERROR: Browser Not Supported')
+        return 1
+
     options = Options()
-    options.add_experimental_option("detach", True)
+
+    if browser == 'ChromeHTML' or browser == 'MSEdgeHTM':
+        options.add_experimental_option("detach", True)
+    elif browser.startswith("FirefoxURL"):
+        options.set_preference('detach', True)
 
     if browser == 'ChromeHTML':
         driver = webdriver.Chrome(options=options)
     elif browser == 'MSEdgeHTM':
         driver = webdriver.Edge(options=options)
-    elif browser == 'FirefoxHTML':
+    elif browser.startswith("FirefoxURL"):
         driver = webdriver.Firefox(options=options)
 
     driver.get("https://app.senecalearning.com/courses/login")
