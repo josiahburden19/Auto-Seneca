@@ -1,55 +1,18 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from tkinter import *
-import winreg
 
 
-def get_default_browser():
-    # Open the registry key for user-level settings
-    reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                             r"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice")
-
-    # Read the ProgID (Program ID) value for the default browser
-    prog_id, _ = winreg.QueryValueEx(reg_key, "ProgId")
-
-    # Extract the browser name from the ProgID
-    browser_name = prog_id.split('.')[-1]
-
-    return browser_name
-
-
-def run_browser(browser):
-    print(browser)
-    global options, driver
-    if browser == 'ChromeHTML':
-        from selenium.webdriver.chrome.options import Options
-    elif browser == 'MSEdgeHTM':
-        from selenium.webdriver.edge.options import Options
-    elif browser.startswith("FirefoxURL"):
-        from selenium.webdriver.firefox.options import Options
-    else:
-        print('ERROR: Browser Not Supported')
-        return 1
-
+def run_browser():
+    global driver
+    from selenium.webdriver.chrome.options import Options
     options = Options()
-
-    if browser == 'ChromeHTML' or browser == 'MSEdgeHTM':
-        options.add_experimental_option("detach", True)
-    elif browser.startswith("FirefoxURL"):
-        options.set_preference('detach', True)
-
-    if browser == 'ChromeHTML':
-        driver = webdriver.Chrome(options=options)
-    elif browser == 'MSEdgeHTM':
-        driver = webdriver.Edge(options=options)
-    elif browser.startswith("FirefoxURL"):
-        driver = webdriver.Firefox(options=options)
-
+    driver = webdriver.Chrome(options=options)
     driver.get("https://app.senecalearning.com/courses/login")
     driver.maximize_window()
 
 
-run_browser(get_default_browser())
+run_browser()
 
 
 def on_closing():
